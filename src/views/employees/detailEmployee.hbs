@@ -1,0 +1,232 @@
+<div class="container-fluid">
+   <div class="row">
+      <div class="col-lg-12">
+         <div class="card">
+            <div class="card-body p-0">
+               <div class="iq-edit-list usr-edit">
+                  <ul class="iq-edit-profile d-flex nav nav-pills">
+                     <li class="col-md-3 p-0">
+                        <a class="nav-link active" data-toggle="pill" href="#personal-information">
+                           Thông tin tài khoản
+                        </a>
+                     </li>
+                     <li class="col-md-3 p-0">
+                        <a class="nav-link" data-toggle="pill" href="#sale-information">
+                           Thông tin bán hàng
+                        </a>
+                     </li>
+                     <li class="col-md-3 p-0">
+                        <a class="nav-link" data-toggle="pill" href="#chang-pwd">
+                           Đổi mật khẩu
+                        </a>
+                     </li>
+                  </ul>
+               </div>
+            </div>
+         </div>
+      </div>
+      <div class="col-lg-12">
+         <div class="iq-edit-list-data">
+            <div class="tab-content">
+               <div class="tab-pane fade active show" id="personal-information" role="tabpanel">
+                  <div class="card">
+                     <div class="card-header d-flex justify-content-between">
+                        <div class="iq-header-title">
+                           <h4 class="card-title">Thông tin tài khoản</h4>
+                        </div>
+                     </div>
+                     <div class="card-body">
+                        <form action="/employee/updateEmployee/{{employee._id}}?_method=PUT" method="post"
+                           data-toggle="validator" enctype="multipart/form-data">
+                           <div class="form-group row align-items-center">
+                              <div class="col-md-12">
+                                 <div class="profile-img-edit">
+                                    <div class="crm-profile-img-edit">
+                                       <img id="preview-image" class="crm-profile-pic rounded-circle avatar-100"
+                                          src="{{employee.avatar}}" alt="profile-pic">
+                                       <div class="crm-p-image bg-primary">
+                                          <i class="las la-pen upload-button"></i>
+                                          <input class="file-upload" type="file" name="image" accept="image/*"
+                                             id="image-input">
+                                          <input type="hidden" name="currentImage" value="{{employee.avatar}}">
+                                       </div>
+                                    </div>
+                                 </div>
+                              </div>
+                           </div>
+                           <div class="row align-items-center">
+                              <div class="form-group col-sm-6">
+                                 <label for="name">Họ tên:</label>
+                                 <input type="text" class="form-control" id="fname" name="fullName"
+                                    value="{{employee.fullName}}">
+                              </div>
+                              <div class="form-group col-sm-6">
+                                 <label for="permission">Chức vụ:</label>
+                                 <input type="text" class="form-control" id="permission"
+                                    value="{{employee.permissions}}" readonly>
+                              </div>
+                              <div class="form-group col-sm-6">
+                                 <label for="email">Email:</label>
+                                 <input type="text" class="form-control" id="uname" name="email"
+                                    value="{{employee.email}}">
+                              </div>
+                           </div>
+                           <button type="submit" class="btn btn-primary mr-2">Cập nhật</button>
+                           <a href="/" class="btn btn-secondary">Huỷ</a>
+                        </form>
+                     </div>
+                  </div>
+               </div>
+               <div class="tab-pane fade" id="sale-information" role="tabpanel">
+                  <div class="card">
+                     <div class="card-header d-flex justify-content-between">
+                        <div class="iq-header-title">
+                           <h4 class="card-title">Thông tin bán hàng</h4>
+                        </div>
+                     </div>
+                     <div class="card-body">
+                        <div class="table-responsive rounded mb-3">
+                           <table class="data-tables table mb-0 tbl-server-info">
+                              <thead class="bg-white text-uppercase">
+                                 <tr class="ligth ligth-data">
+                                    <th>Ngày</th>
+                                    <th>Khách hàng</th>
+                                    <th>Tổng</th>
+                                    <th>Đã thanh toán</th>
+                                    <th>Trạng thái</th>
+                                    <th>Thừa</th>
+                                    <th>Tùy chọn</th>
+                                 </tr>
+                              </thead>
+                              <tbody class="ligth-body">
+                                 {{#each orders}}
+                                 <tr>
+                                    <td>{{formatDate orderDate}}</td>
+                                    <td>{{customer.name}}</td>
+                                    <td>{{totalPrice}}</td>
+                                    <td>{{payment.receive}}</td>
+                                    <td>
+                                       <div class="badge {{statusBadge status}}">{{status}}</div>
+                                    </td>
+                                    <td>{{payment.remain}}</td>
+                                    <td>
+                                       <div class="d-flex align-items-center list-action">
+                                          <a class="badge badge-info mr-2" data-toggle="tooltip" data-placement="top" title="View"
+                                             href="/order/orderDetail/{{_id}}"><i class="ri-eye-line mr-0"></i></a>
+                                       </div>
+                                    </td>
+                                 </tr>
+                                 {{/each}}
+                              </tbody>
+                           </table>
+                        </div>
+                     </div>
+                  </div>
+               </div>
+               <div class="tab-pane fade" id="chang-pwd" role="tabpanel">
+                  <div class="card">
+                     <div class="card-header d-flex justify-content-between">
+                        <div class="iq-header-title">
+                           <h4 class="card-title">Đổi mật khẩu</h4>
+                        </div>
+                     </div>
+                     <div class="card-body">
+                        <form action="/employee/changePassword/{{employee._id}}?_method=PUT" method="post">
+                           <div class="form-group">
+                              <label for="cpass">Mật khẩu cũ</label>
+                              <a href="javascript:void(0);" class="float-right">Quên mật khẩu</a>
+                              <input type="Password" class="form-control" id="cpass" name="oldPassword">
+                           </div>
+                           <div class="form-group">
+                              <label for="npass">Mật khẩu mới:</label>
+                              <input type="Password" class="form-control" id="npass" name="newPassword">
+                           </div>
+                           <div class="form-group">
+                              <label for="vpass">Mã xác nhận:</label>
+                              <div class="input-group">
+                                 <input type="number" class="form-control" id="vpass" name="confirmCode">
+                                 <div class="input-group-append">
+                                    <button id="send-code" type="button" class="btn btn-outline-secondary"
+                                       data-toggle="tooltip" data-placement="top" title=""
+                                       data-original-title="Gửi mã xác nhận">
+                                       <i class="fas fa-paper-plane"></i>
+                                    </button>
+                                 </div>
+                              </div>
+                              <div id="message"></div>
+                           </div>
+                           <button type="submit" class="btn btn-primary mr-2">Cập nhật</button>
+                           <a href="/" class="btn btn-secondary">Huỷ</a>
+                        </form>
+                     </div>
+                  </div>
+               </div>
+            </div>
+         </div>
+      </div>
+   </div>
+</div>
+
+<div id="notification" style="position: fixed; top: 20px; right: 20px; z-index: 9999; display: none;">
+   <div class="toast bg-success text-white border-0 rounded p-2 mt-3" role="alert" aria-live="assertive"
+      aria-atomic="true">
+      <div class="toast-header bg-success text-white">
+         <strong class="mr-auto text-white">Thông báo</strong>
+         <button type="button" class="ml-2 mb-1 close text-white" data-dismiss="toast" aria-label="Close">
+            <span aria-hidden="true">×</span>
+         </button>
+      </div>
+      <div class="toast-body" id="toast-body">
+         <!-- Nội dung thông báo sẽ được đặt ở đây -->
+      </div>
+   </div>
+</div>
+
+<script>
+   document.getElementById('image-input').addEventListener('change', function (event) {
+      const file = event.target.files[0];
+      if (file) {
+         const reader = new FileReader();
+         reader.onload = function (e) {
+            document.getElementById('preview-image').src = e.target.result;
+         }
+         reader.readAsDataURL(file);
+      }
+   });
+
+   document.getElementById('send-code').addEventListener('click', function () {
+      fetch(`/employee/sendVerificationCode/{{employee._id}}`, {
+         method: 'GET',
+         headers: {
+            'Content-Type': 'application/json'
+         }
+      })
+         .then(res => res.json())
+         .then(data => {
+            showNotification(data.message || 'Gửi mã xác nhận thất bại', data.message ? 'success' : 'danger');
+         })
+         .catch(error => {
+            console.error('Lỗi:', error);
+            showNotification('Có lỗi xảy ra', 'danger');
+         });
+   });
+
+
+   function showNotification(message, type) {
+      const toastBody = document.getElementById('toast-body');
+      const notification = document.getElementById('notification');
+
+      toastBody.textContent = message;
+      toastBody.parentElement.className = `toast text-white border-0 rounded p-2 mt-3 bg-${type}`;
+      notification.style.display = 'block';
+      toastBody.parentElement.classList.add('show');
+
+      // Ẩn toast sau 3 giây
+      setTimeout(function () {
+         toastBody.parentElement.classList.remove('show');
+         setTimeout(function () {
+            notification.style.display = 'none';
+         }, 150);
+      }, 2000);
+   }
+</script>

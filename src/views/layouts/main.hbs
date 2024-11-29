@@ -1,0 +1,42 @@
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+      <title>NPT POS</title>
+      
+      <!-- Favicon -->
+      <link rel="shortcut icon" href="{{assetPath 'images/favicon.ico'}}" />
+      <link rel="stylesheet" href="{{assetPath 'css/backend-plugin.min.css'}}">
+      <link rel="stylesheet" href="{{assetPath 'css/backend.css?v=1.0.0'}}">
+      <link rel="stylesheet" href="{{assetPath 'vendor/line-awesome/dist/line-awesome/css/line-awesome.min.css'}}">
+      <link rel="stylesheet" href="{{assetPath 'vendor/remixicon/fonts/remixicon.css'}}">  
+      <link rel="stylesheet" href="{{assetPath 'vendor/font-awesome/css/font-awesome.min.css'}}">
+      <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+      <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+
+    </head>
+  <body class="  ">
+    <!-- loader Start -->
+    <div id="loading">
+          <div id="loading-center">
+          </div>
+    </div>
+    <!-- loader END -->
+    <!-- Wrapper Start -->
+    <div class="wrapper">
+    {{> navbar}}
+    <div class="content-page">
+        {{{body}}}
+    </div>
+    {{> footer}}
+    </div>
+    <!-- Wrapper End-->
+    <script src="{{assetPath 'js/backend-bundle.min.js'}}"></script>
+    <script src="{{assetPath 'js/table-treeview.js'}}"></script>
+    <script src="{{assetPath 'js/customizer.js'}}"></script>
+    <script async src="{{assetPath 'js/chart-custom.js'}}"></script>
+    <script src="{{assetPath 'js/app.js'}}"></script>
+  </body>
+</html>

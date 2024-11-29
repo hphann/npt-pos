@@ -1,0 +1,41 @@
+{
+  "name": "store-management",
+  "version": "1.0.0",
+  "main": "index.js",
+  "repository": "http://localhost:3000",
+  "license": "MIT",
+  "devDependencies": {
+    "eslint": "^8.38.0",
+    "eslint-plugin-react": "^7.32.2",
+    "eslint-plugin-react-hooks": "^4.6.0",
+    "eslint-plugin-react-refresh": "^0.3.4",
+    "nodemon": "^3.1.7"
+  },
+  "dependencies": {
+    "api-query-params": "^5.4.0",
+    "axios": "^1.7.7",
+    "bcryptjs": "^2.4.3",
+    "connect-mongo": "^5.1.0",
+    "dotenv": "^16.4.5",
+    "express": "^4.21.0",
+    "express-handlebars": "^8.0.1",
+    "express-session": "^1.18.1",
+    "jsonwebtoken": "^9.0.2",
+    "method-override": "^3.0.0",
+    "mongodb": "^6.9.0",
+    "mongoose": "^8.7.0",
+    "mongoose-slug-updater": "^3.3.0",
+    "multer": "^1.4.5-lts.1",
+    "nodemailer": "^6.9.15",
+    "path": "^0.12.7",
+    "sharp": "^0.33.5",
+    "store-management": "file:"
+  },
+  "scripts": {
+    "start": "nodemon ./src/index.js"
+  },
+  "type": "module",
+  "imports": {
+    "#root/*": "./src/*"
+  }
+}

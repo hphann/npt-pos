@@ -1,0 +1,237 @@
+<style>
+    .modal-content {
+        border-radius: 8px;
+    }
+    .modal-header {
+        border-bottom: none;
+        padding-bottom: 0;
+    }
+    .modal-body {
+        padding-top: 0;
+    }
+    .modal-footer {
+        border-top: none;
+    }
+    .btn-danger {
+        background-color: #dc3545;
+        border-color: #dc3545;
+    }
+    .btn-secondary {
+        background-color: #6c757d;
+        border-color: #6c757d;
+    }
+</style>
+
+<div class="container-fluid">
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="d-flex flex-wrap align-items-center justify-content-between mb-4">
+                    <div>
+                        <h4 class="mb-3">Danh mục</h4>
+                    </div>
+                    {{#if (isAdmin @root.user.permissions)}}
+                    <a href="/category/addCategoryPage" class="btn btn-primary add-list"><i class="las la-plus mr-3"></i>Thêm danh mục</a>
+                    {{/if}}
+                </div>
+                {{#if success}}
+                    <!-- Position it -->
+                <div id="successAlert" style="position: fixed; top: 20px; right: 20px; z-index: 9999;">
+                <!-- Then put toasts within -->
+                    <div class="toast bg-success text-white border-0 rounded p-2 mt-3" role="alert" aria-live="assertive" aria-atomic="true">
+                        <div class="toast-header bg-success text-white">
+                            <svg class="bd-placeholder-img rounded mr-2" width="20" height="20" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice" focusable="false" role="img">
+                                <rect width="100%" height="100%" fill="#fff"></rect>
+                            </svg>
+                            <strong class="mr-auto text-white">Thông báo</strong>
+                            <small>vừa xong</small>
+                            <button type="button" class="ml-2 mb-1 close text-white" data-dismiss="toast" aria-label="Close">
+                                <span aria-hidden="true">×</span>
+                            </button>
+                        </div>
+                        <div class="toast-body">
+                            
+                        </div>
+                    </div>
+                </div>
+                {{/if}}
+            </div>
+            <div class="col-lg-12">
+                <div class="table-responsive rounded mb-3">
+                <table class="data-tables table mb-0 tbl-server-info">
+                    <thead class="bg-white text-uppercase">
+                        <tr class="ligth ligth-data">
+                            <th>STT</th>
+                            <th>Mã danh mục</th>
+                            <th>Danh mục</th>
+                            {{#if (isAdmin @root.user.permissions)}}
+                            <th>Tùy chọn</th>
+                            {{/if}}
+                        </tr>
+                    </thead>
+                    <tbody class="ligth-body">
+                        {{#each categories}}
+                        <tr>
+                            <td>{{increment @index}}</td>
+                            <td>{{this.code}}</td>
+                            <td>{{this.name}}</td>
+                            {{#if (isAdmin @root.user.permissions)}}
+                            <td>
+                                <div class="d-flex align-items-center list-action">
+                                    <a class="badge bg-success mr-2" data-toggle="tooltip" data-placement="top" title="" data-original-title="Edit"
+                                        href="/category/editCategoryPage/{{this._id}}"><i class="ri-pencil-line mr-0"></i></a>
+                                    <form class="badge bg-warning mr-2 delete-category-form" action="/category/deleteCategory/{{this._id}}?_method=DELETE" data-id="{{this._id}}" style="display: inline;">
+                                        <button type="button" class="bg-warning delete-category-btn" data-toggle="tooltip" data-placement="top" title="Delete" style="border: none; cursor: pointer;">
+                                            <i class="ri-delete-bin-line mr-0"></i>
+                                        </button>
+                                    </form>
+                                </div>
+                            </td>
+                            {{/if}}
+                        </tr>
+                        {{/each}}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+<div class="modal fade" id="deleteConfirmModal" tabindex="-1" role="dialog" aria-labelledby="deleteConfirmModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="deleteConfirmModalLabel">Xóa danh mục</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        Bạn có chắc rằng muốn xóa danh mục này?
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-danger" id="confirmDeleteBtn">Xóa</button>
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Đóng</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            let deleteForm;
+            function showAlert(message, type) {
+                const alertElement = document.getElementById('successAlert');
+                if (!alertElement) {
+                    console.error('Không tìm thấy phần tử successAlert');
+                    return;
+                }
+                const toast = alertElement.querySelector('.toast');
+                const toastBody = toast.querySelector('.toast-body');
+        
+                // Đặt nội dung và màu sắc cho toast
+                toastBody.textContent = message;
+                toast.className = `toast text-white border-0 rounded p-2 mt-3 bg-${type}`;
+                toast.querySelector('.toast-header').className = `toast-header text-white bg-${type}`;
+        
+                // Hiển thị toast
+                alertElement.style.display = 'block';
+                toast.classList.add('show');
+                
+                // Ẩn toast sau 1 giây
+                setTimeout(function() {
+                    toast.classList.remove('show');
+                    setTimeout(function() {
+                        alertElement.style.display = 'none';
+                    }, 150);
+                }, 2000);
+            }
+
+            function initializeEventListeners() {
+                document.querySelectorAll('.delete-category-btn').forEach(button => {
+                    button.addEventListener('click', function(e) {
+                        e.preventDefault();
+                        deleteForm = this.closest('.delete-category-form');
+                        $('#deleteConfirmModal').modal('show');
+                    });
+                });
+            }
+
+            // Khởi tạo event listeners ban đầu
+            initializeEventListeners();
+
+            let currentPage = 1; // Giả sử bạn có biến theo dõi trang hiện tại
+            const itemsPerPage = 10; // Số mục trên mỗi trang
+
+            // Xử lý sự kiện khi nhấn nút Xóa trong modal
+            document.getElementById('confirmDeleteBtn').addEventListener('click', function() {
+                if (deleteForm) {
+                    const actionUrl = deleteForm.getAttribute('action');
+                    fetch(actionUrl, {
+                        method: 'POST', // hoặc 'DELETE' tùy thuộc vào cấu hình route của bạn
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-Requested-With': 'XMLHttpRequest'
+                        },
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            // Xóa hàng tương ứng khỏi bảng
+                            deleteForm.closest('tr').remove();
+                            showAlert('Xóa danh mục thành công', 'success');
+                            
+                            // Nếu bạn đang sử dụng DataTables, cập nhật lại bảng
+                            if ($.fn.DataTable) {
+                                $('.data-tables').DataTable().row(deleteForm.closest('tr')).remove().draw();
+                            }
+                            
+                            // Cập nhật số thứ tự của các hàng còn lại (nếu cần)
+                            updateRowNumbers();
+                        } else {
+                            showAlert(data.message || 'Có lỗi xảy ra khi xóa danh mục', 'danger');
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                        showAlert('Có lỗi xảy ra khi xóa danh mục', 'danger');
+                    })
+                    .finally(() => {
+                        $('#deleteConfirmModal').modal('hide');
+                    });
+                }
+            });
+
+            // Hàm cập nhật số thứ tự của các hàng
+            function updateRowNumbers() {
+                document.querySelectorAll('.data-tables tbody tr').forEach((row, index) => {
+                    const sttCell = row.querySelector('td:first-child');
+                    if (sttCell) {
+                        sttCell.textContent = index + 1;
+                    }
+                });
+            }
+
+            // Kiểm tra URL để hiển thị thông báo phù hợp
+            const urlParams = new URLSearchParams(window.location.search);
+            if (urlParams.get('success') === 'add') {
+                showAlert('Thêm danh mục thành công', 'success');
+            } else if (urlParams.get('success') === 'edit') {
+                showAlert('Chỉnh sửa danh mục thành công', 'info');
+            } else if (urlParams.get('success') === 'delete') {
+                showAlert('Xóa danh mục thành công', 'warning');
+            }
+
+            // Xóa tham số query sau khi đã hiển thị thông báo
+            if (window.history.replaceState) {
+                window.history.replaceState(null, null, window.location.pathname);
+            }
+            
+            document.querySelector('.table-responsive').addEventListener('click', function(e) {
+            if (e.target.closest('.delete-category-btn')) {
+                e.preventDefault();
+                deleteForm = e.target.closest('.delete-category-form');
+                    $('#deleteConfirmModal').modal('show');
+                }
+            });
+        }); 
+    </script>

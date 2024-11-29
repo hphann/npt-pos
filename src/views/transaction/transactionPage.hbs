@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Thông tin giao dịch</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f9;
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            max-width: 900px;
+            margin: 50px auto;
+            padding: 30px;
+            border-radius: 8px;
+            background-color: white;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        h3 {
+            text-align: center;
+            color: #333;
+            margin-bottom: 30px;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        .form-group label {
+            font-weight: bold;
+            margin-bottom: 5px;
+            display: block;
+        }
+        .form-control, .form-control select {
+            width: 100%;
+            padding: 12px;
+            font-size: 16px;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+        }
+        .form-control:focus {
+            border-color: #007bff;
+        }
+        .btn {
+            width: 100%;
+            padding: 12px;
+            background-color: #007bff;
+            color: white;
+            font-size: 18px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+        }
+        .btn:hover {
+            background-color: #0056b3;
+        }
+        #paymentSummary {
+            margin-top: 30px;
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            background-color: #f9f9f9;
+        }
+        #qrCode img {
+            width: 150px;
+        }
+        .alert {
+            padding: 15px;
+            margin-top: 20px;
+            border-radius: 6px;
+        }
+        .alert.error {
+            background-color: #f8d7da;
+            color: #721c24;
+        }
+        .alert.success {
+            background-color: #d4edda;
+            color: #155724;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h3>Thông tin giao dịch</h3>
+    <form id="transactionForm">
+        <!-- Tên khách hàng -->
+        <div class="form-group">
+            <label for="customerName">Tên khách hàng:</label>
+            <input type="text" class="form-control" id="customerName" name="customerName" required>
+        </div>
+
+        <!-- Điện thoại khách hàng -->
+        <div class="form-group">
+            <label for="customerPhone">Điện thoại:</label>
+            <input type="text" class="form-control" id="customerPhone" name="customerPhone" required>
+        </div>
+
+
+        <!-- Thông tin sản phẩm -->
+        <div class="form-group">
+            <label for="productName">Tên sản phẩm:</label>
+            <input type="text" class="form-control" id="productName" name="productName" required>
+        </div>
+
+        <!-- Số lượng sản phẩm -->
+        <div class="form-group">
+            <label for="productQuantity">Số lượng:</label>
+            <input type="number" class="form-control" id="productQuantity" name="productQuantity" min="1" required>
+        </div>
+
+        <!-- Giá sản phẩm -->
+        <div class="form-group">
+            <label for="productPrice">Giá mỗi sản phẩm (VND):</label>
+            <input type="number" class="form-control" id="productPrice" name="productPrice" required>
+        </div>
+
+        <!-- Tổng số tiền -->
+        <div class="form-group">
+            <label for="totalAmount">Tổng số tiền:</label>
+            <input type="number" class="form-control" id="totalAmount" name="totalAmount" required readonly>
+
+
+        <!-- Số tiền thanh toán -->
+        <div class="form-group">
+            <label for="receivedAmount">Số tiền thanh toán:</label>
+            <input type="number" class="form-control" id="receivedAmount" name="receivedAmount" required>
+        </div>
+
+        <!-- Phương thức thanh toán -->
+        <div class="form-group">
+            <label for="paymentMethod">Phương thức thanh toán:</label>
+            <select class="form-control" id="paymentMethod" name="paymentMethod" required>
+
+
+                <option value="momo">Momo</option>
+                <option value="cash">Tiền mặt</option>
+            </select>
+        </div>
+
+        
+        <!-- Nút xác nhận -->
+        <button type="submit" class="btn" id="paymentButton">Xác nhận thanh toán</button>
+
+        <!-- Thông báo sẽ xuất hiện sau khi nhấn nút -->
+        <div id="paymentMessage" style="display:none; color: green;">
+            Đã thanh toán
+        </div>
+
+
+    </form>
+
+    <!-- Hiển thị kết quả thanh toán -->
+    <div id="paymentSummary"></div>
+    <div id="qrCode" class="qr-code"></div>
+</div>
+
+<script>
+
+document.getElementById('transactionForm').addEventListener('submit', async function(e) {
+    e.preventDefault(); // Ngăn việc tải lại trang
+
+    // Lấy thông tin từ các trường trong form
+    const customerName = document.getElementById('customerName').value;
+    const customerPhone = document.getElementById('customerPhone').value;
+    const productName = document.getElementById('productName').value;
+    const productQuantity = parseInt(document.getElementById('productQuantity').value);
+    const productPrice = parseFloat(document.getElementById('productPrice').value);
+    const receivedAmount = parseFloat(document.getElementById('receivedAmount').value);
+    const paymentMethod = document.getElementById('paymentMethod').value;
+
+    // Kiểm tra dữ liệu nhập
+    if (isNaN(productPrice) || isNaN(productQuantity) || isNaN(receivedAmount)) {
+        alert("Vui lòng nhập đầy đủ thông tin và giá trị hợp lệ.");
+        return;
+    }
+
+    // Tính tổng tiền (Giá sản phẩm * số lượng)
+    const totalAmount = productPrice * productQuantity;
+
+    // Cập nhật tổng tiền lên giao diện
+    document.getElementById('totalAmount').value = totalAmount.toLocaleString(); // Cập nhật giá trị của trường input
+
+    // Kiểm tra số tiền thanh toán
+    if (receivedAmount < totalAmount) {
+        alert("Số tiền thanh toán không đủ. Vui lòng nhập lại.");
+        return;
+    }
+
+    // Tính tiền thối
+    const changeAmount = receivedAmount - totalAmount;
+
+    // Xử lý thanh toán
+    let summaryHtml = `
+        <h4>Thông tin thanh toán</h4>
+        <p><strong>Tên khách hàng:</strong> ${customerName}</p>
+        <p><strong>Điện thoại:</strong> ${customerPhone}</p>
+        <p><strong>Tên sản phẩm:</strong> ${productName}</p>
+        <p><strong>Số lượng:</strong> ${productQuantity}</p>
+        <p><strong>Giá mỗi sản phẩm:</strong> ${productPrice.toLocaleString()} VND</p>
+        <p><strong>Tổng tiền:</strong> ${totalAmount.toLocaleString()} VND</p>
+        <p><strong>Tiền nhận:</strong> ${receivedAmount.toLocaleString()} VND</p>
+    `;
+
+    // Hiển thị thông tin thanh toán theo phương thức thanh toán
+    if (paymentMethod === 'cash') {
+        summaryHtml += `
+            <p><strong>Tiền thối:</strong> ${changeAmount.toLocaleString()} VND</p>
+            <p><strong>Phương thức thanh toán:</strong> Tiền mặt</p>
+        `;
+        document.getElementById('paymentSummary').innerHTML = summaryHtml;
+        document.getElementById('qrCode').innerHTML = ''; // Xóa QR code nếu có
+    }
+
+    
+     if (paymentMethod === 'momo') {
+        summaryHtml += `
+            <p><strong>Phương thức thanh toán:</strong> Momo</p>
+        `;
+
+        // Hiển thị QR code thanh toán Momo (giả lập)
+        const qrCodeImage = `<img src="https://example.com/qr-code.png" alt="QR code">`;
+        document.getElementById('qrCode').innerHTML = qrCodeImage;
+    }
+
+    document.getElementById('paymentMessage').style.display = 'block'; // Hiển thị thông báo thanh toán
+});
+
+</script>
+
+</body>
+</html>

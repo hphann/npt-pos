@@ -1,0 +1,78 @@
+<div class="container-fluid add-form-list"></div>
+        <div class="row">
+            <div class="col-sm-12">
+                <div class="card">
+                    <div class="card-header d-flex justify-content-between">
+                        <div class="header-title">
+                            <h4 class="card-title">Sửa sản phẩm</h4>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <form action="/product/editProduct/{{product._id}}?_method=PUT" method="post" data-toggle="validator" enctype="multipart/form-data">
+                            <div class="row">
+                                <div class="col-md-6">                      
+                                    <div class="form-group">
+                                        <label>Tên sản phẩm *</label>
+                                        <input type="text" class="form-control" name="name" value="{{product.name}}" data-errors="Please Enter Name." required>
+                                        <div class="help-block with-errors"></div>
+                                    </div>
+                                </div>    
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label>Mã sản phẩm *</label>
+                                        <input type="text" class="form-control" name="barcode" value="{{product.barcode}}" data-errors="Please Enter Code." required>
+                                        <div class="help-block with-errors"></div>
+                                    </div>
+                                </div> 
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label>Danh mục *</label>
+                                        <select name="category" class="selectpicker form-control" data-style="py-0">
+                                            {{#each categories}}
+                                                <option value="{{this.code}}" {{#if (eq ../product.category this.code)}}selected{{/if}}>
+                                                    {{this.name}}
+                                                </option>
+                                            {{/each}}
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">                                    
+                                    <div class="form-group">
+                                        <label>Số lượng *</label>
+                                        <input type="text" class="form-control" name="quantity" value="{{product.quantity}}" required>
+                                        <div class="help-block with-errors"></div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label>Giá nhập *</label>
+                                        <input type="text" class="form-control" name="importPrice" value="{{product.importPrice}}" data-errors="Please Enter Cost." required>
+                                        <div class="help-block with-errors"></div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label>Giá bán *</label>
+                                        <input type="text" class="form-control" name="retailPrice" value="{{product.retailPrice}}" data-errors="Please Enter Price." required>
+                                        <div class="help-block with-errors"></div>
+                                    </div>
+                                </div>
+                                <div class="col-md-12">
+                                <div class="form-group">
+                                    <label>Ảnh sản phẩm</label>
+                                    {{#if product.image}}
+                                        <img src="{{product.image}}" alt="Current product image" style="max-width: 200px; margin-bottom: 10px;">
+                                    {{/if}}
+                                    <input type="file" class="form-control image-file" name="image" accept="image/*">
+                                    <input type="hidden" name="currentImage" value="{{product.image}}">
+                                    </div>
+                                </div>
+                            </div>                            
+                            <button type="submit" class="btn btn-primary mr-2">Cập nhật</button>
+                            <button type="reset" class="btn btn-danger mr-2">Hủy</button>
+                            <button type="button" class="btn btn-primary mr-2" onclick="window.history.back()">Trở về</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>

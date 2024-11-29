@@ -1,0 +1,35 @@
+<div class="container-fluid add-form-list">
+        <div class="row">
+            <div class="col-sm-12">
+                <div class="card">
+                    <div class="card-header d-flex justify-content-between">
+                        <div class="header-title">
+                            <h4 class="card-title">Sửa danh mục</h4>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <form action="/category/editCategory/{{category._id}}?_method=PUT" method="POST" data-toggle="validator">
+                            <div class="row">                                                                
+                                <div class="col-md-12">
+                                    <div class="form-group">
+                                        <label>Danh mục *</label>
+                                        <input type="text" name="name" class="form-control" value="{{category.name}}" required>
+                                        <div class="help-block with-errors"></div>
+                                    </div>
+                                </div>  
+                                <div class="col-md-12">
+                                    <div class="form-group">
+                                        <label>Mã danh mục *</label>
+                                        <input type="text" name="code"class="form-control" value="{{category.code}}" required>
+                                        <div class="help-block with-errors"></div>
+                                    </div>
+                                </div>                                 
+                            </div>                            
+                            <button type="submit" class="btn btn-primary mr-2">Cập nhật</button>
+                            <a href="/category/listCategory" class="btn btn-danger">Quay lại</a>
+                        </form>
+                        
+                    </div>
+                </div>
+            </div>
+        </div>

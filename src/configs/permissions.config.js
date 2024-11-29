@@ -1,0 +1,4 @@
+export const permissions = {
+  ADMIN: 'ADMIN_PERMISSION',
+  SALESPERSON: 'SALESPERSON_PERMISSION'
+}

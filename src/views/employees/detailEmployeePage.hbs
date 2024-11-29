@@ -1,0 +1,95 @@
+<div class="container-fluid add-form-list"></div>
+<div class="row">
+    <div class="col-sm-12">
+        <div class="card">
+            <div class="card-header d-flex justify-content-between">
+                <div class="header-title">
+                    <h4 class="card-title">Thông tin nhân viên</h4>
+                </div>
+            </div>
+            <div class="card-body">
+                <form data-toggle="validator" enctype="multipart/form-data">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label>Tên nhân viên *</label>
+                                <input type="text" class="form-control" name="fullName" value="{{employee.fullName}}"
+                                    data-errors="Please Enter Name." required>
+                                <div class="help-block with-errors"></div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label>Email *</label>
+                                <input type="email" class="form-control" name="email" value="{{employee.email}}"
+                                    data-errors="Please Enter Code." required>
+                                <div class="help-block with-errors"></div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label>Quyền *</label>
+                                <input type="text" class="form-control" name="permissions"
+                                    value="{{employee.permissions}}" required>
+                                <div class="help-block with-errors"></div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label>Username *</label>
+                                <input type="text" class="form-control" name="username" value="{{employee.username}}"
+                                    data-errors="Please Enter Username." required>
+                                <div class="help-block with-errors"></div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label>Password *</label>
+                                <div class="input-group">
+                                    <input type="password" class="form-control" id="password" name="password"
+                                        value="{{employee.password}}" data-errors="Please Enter Password." required>
+                                    <div class="input-group-append">
+                                        <button type="button" class="btn btn-outline-secondary"
+                                            onclick="togglePassword()">
+                                            <i class="fa fa-eye" id="togglePasswordIcon"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                                <div class="help-block with-errors"></div>
+                            </div>
+                        </div>
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                <label>Ảnh nhân viên</label>
+                                {{#if employee.avatar}}
+                                <img src="{{employee.avatar}}" alt="Current employee image"
+                                    style="max-width: 200px; margin-bottom: 10px;">
+                                {{/if}}
+                                {{!-- <input type="file" class="form-control image-file" name="image" accept="image/*"> --}}
+                                <input type="hidden" name="currentImage" value="{{employee.avatar}}">
+                            </div>
+                        </div>
+                    </div>
+                    <a href="/employee/listEmployee" class="btn btn-secondary">Quay lại</a>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+const togglePassword = () => {
+    var passwordField = document.getElementById("password");
+    var toggleIcon = document.getElementById("togglePasswordIcon");
+    if (passwordField.type === "password") {
+        passwordField.type = "text";
+        toggleIcon.classList.remove("fa-eye");
+        toggleIcon.classList.add("fa-eye-slash");
+    } else {
+        passwordField.type = "password";
+        toggleIcon.classList.remove("fa-eye-slash");
+        toggleIcon.classList.add("fa-eye");
+    }
+}
+</script>
+

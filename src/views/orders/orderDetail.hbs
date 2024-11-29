@@ -1,0 +1,123 @@
+<div class="container-fluid order-detail">
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="card">
+                <div class="card-header d-flex justify-content-between">
+                    <div class="header-title">
+                        <h4 class="card-title">Chi tiết hóa đơn</h4>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <fieldset>
+                        <legend>Thông tin khách hàng</legend>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label>Ngày đặt hàng:</label>
+                                    <input class="form-control" value="{{formatDate orderInfo.orderDate}}" disabled>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label>Tên khách hàng:</label>
+                                    <input class="form-control" value="{{orderInfo.customer.name}}" disabled>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label>Số điện thoại:</label>
+                                    <input class="form-control" value="{{orderInfo.customer.phone}}" disabled>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label>Địa chỉ:</label>
+                                    <input class="form-control" value="{{orderInfo.customer.address}}" disabled>
+                                </div>
+                            </div>
+                        </div>
+                    </fieldset>
+
+                    <fieldset>
+                            <legend>Thông tin sản phẩm</legend>
+                            <div class="table-responsive rounded mb-3">
+                                <table id="productTable" class="table mb-0">
+                                    <thead class="bg-white text-uppercase">
+                                        <tr>
+                                            <th>Sản phẩm</th>
+                                            <th>Giá</th>
+                                            <th>Số lượng</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody class="ligth-body">
+                                        {{#each orderInfo.details}}
+                                            <tr>
+                                                <td>
+                                                    <div class="d-flex align-items-center">
+                                                        <img src="{{productImage}}" class="img-fluid rounded avatar-50 mr-3" alt="image">
+                                                        <div>
+                                                            {{productName}}
+                                                        </div>
+                                                    </div>
+                                                </td>
+                                                <td>{{formatCurrency price}}</td>
+                                                <td>{{quantity}}</td>
+                                            </tr>
+                                        {{/each}}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </fieldset>
+
+                    <fieldset>
+                        <legend>Thanh toán</legend>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label>Tổng tiền đơn hàng:</label>
+                                    <input class="form-control" value="{{formatCurrency orderInfo.totalPrice}}" disabled>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label>Trạng thái thanh toán:</label>
+                                    <input class="form-control" value="{{orderInfo.status}}" disabled>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label>Tổng tiền đã nhận:</label>
+                                    <input class="form-control" value="{{formatCurrency orderInfo.payment.receive}}" disabled>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label>Tiền thừa:</label>
+                                    <input class="form-control" value="{{formatCurrency orderInfo.payment.remain}}" disabled>
+                                </div>
+                            </div>
+                        </div>
+                    </fieldset>
+
+                    <fieldset>
+                        <legend>Thông tin nhân viên</legend>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label>Tên nhân viên:</label>
+                                    <input class="form-control" value="{{orderInfo.employee.fullName}}" disabled>
+                                </div>
+                            </div>
+                        </div>
+                    </fieldset>
+
+                    <div class="row">
+                        <div class="col-md-12">
+                            <button type="button" class="btn btn-primary" onclick="window.history.back()">Trở về</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

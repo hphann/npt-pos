@@ -1,0 +1,79 @@
+<div class="container-fluid add-form-list">
+        <div class="row">
+            <div class="col-sm-12">
+                <div class="card">
+                    <div class="card-header d-flex justify-content-between">
+                        <div class="header-title">
+                            <h4 class="card-title">Thêm sản phẩm</h4>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <form action="/product/addProduct" method="post" data-toggle="validator" enctype="multipart/form-data">
+                            <div class="row">
+                                <div class="col-md-6">                      
+                                    <div class="form-group">
+                                        <label>Tên sản phẩm *</label>
+                                        <input type="text" class="form-control" name="name" placeholder="Nhập tên sản phẩm" data-errors="Please Enter Name." required>
+                                        <div class="help-block with-errors"></div>
+                                    </div>
+                                </div>    
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label>Mã sản phẩm *</label>
+                                        <input type="text" class="form-control" name="barcode" placeholder="Nhập mã sản phẩm" data-errors="Please Enter Code." required>
+                                        <div class="help-block with-errors"></div>
+                                    </div>
+                                </div> 
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label>Danh mục *</label>
+                                        <select name="category" class="selectpicker form-control" data-style="py-0">
+                                            <option>Chọn danh mục</option>
+                                            {{#each categories}}
+                                                <option value="{{this.code}}">{{this.name}}</option>
+                                            {{/each}}
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">                                    
+                                    <div class="form-group">
+                                        <label>Số lượng *</label>
+                                        <input type="text" class="form-control" name="quantity" placeholder="Nhập số lượng" required>
+                                        <div class="help-block with-errors"></div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label>Giá nhập *</label>
+                                        <input type="text" class="form-control" name="importPrice" placeholder="Nhập giá nhập" data-errors="Please Enter Cost." required>
+                                        <div class="help-block with-errors"></div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label>Giá bán *</label>
+                                        <input type="text" class="form-control" name="retailPrice" placeholder="Nhập giá bán" data-errors="Please Enter Price." required>
+                                        <div class="help-block with-errors"></div>
+                                    </div>
+                                </div>
+                                <div class="col-md-12">
+                                    <div class="form-group">
+                                        <label>Ảnh sản phẩm</label>
+                                        <input type="file" class="form-control image-file" name="image" accept="image/*">
+                                    </div>
+                                </div>
+                                {{!-- <div class="col-md-12">
+                                    <div class="form-group">
+                                        <label>Description / Product Details</label>
+                                        <textarea class="form-control" rows="4"></textarea>
+                                    </div>
+                                </div> --}}
+                            </div>                            
+                            <button type="submit" class="btn btn-primary mr-2">Thêm</button>
+                            <button type="reset" class="btn btn-danger mr-2">Hủy</button>
+                            <button type="button" class="btn btn-primary mr-2" onclick="window.history.back()">Trở về</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
