@@ -1,4 +1,4 @@
-import * as customerService from '../services/customer.service.js'
+import * as customerService from '../services/customer.Service.js'
 
 export const listCustomer = async (req, res) => {
   try {
