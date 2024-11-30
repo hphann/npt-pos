@@ -12,6 +12,6 @@ export const searchController = async(req, res) => {
         res.json({ products });
     } catch (error) {
         console.error(error);
-        res.status(500).send("Lỗi tìm kiếm sản phẩm");
+        res.status(500).send('Lỗi tìm kiếm sản phẩm');
     }
 };

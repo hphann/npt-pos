@@ -32,7 +32,8 @@
     "store-management": "file:"
   },
   "scripts": {
-    "start": "nodemon ./src/index.js"
+    "start": "nodemon ./src/index.js",
+    "dev": "nodemon ./src/index.js"
   },
   "type": "module",
   "imports": {

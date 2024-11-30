@@ -56,6 +56,7 @@
                                 <table id="productTable" class="table mb-0">
                                     <thead class="bg-white text-uppercase">
                                         <tr>
+                                            <th>Ảnh sản phẩm</th>
                                             <th>Sản phẩm</th>
                                             <th>Mã sản phẩm</th>
                                             <th>Giá</th>
@@ -119,7 +120,7 @@
                         <!-- Các nút thao tác -->
                         <div class="row">
                             <div class="col-md-12">
-                                <button type="submit" class="btn btn-primary mr-2">Tạo hóa đơn</button>
+                                <button id="createOrderButton" type="submit" class="btn btn-primary mr-2">Tạo hóa đơn</button>
                                 <button type="reset" class="btn btn-danger">Hủy</button>
                             </div>
                         </div>
@@ -285,7 +286,55 @@
 
 
 
-    
+  
+
+document.getElementById("createOrderButton").addEventListener("click", async (event) => {
+    // Ngăn hành động mặc định của trình duyệt
+    event.preventDefault();
+
+    const customerName = document.getElementById("customerName").value;
+    const address = document.getElementById("address").value;
+    const phone = document.getElementById("phone").value;
+    const employee = "67094c213dd41d9b1fc94a85"; // Bạn có thể lấy giá trị này từ user session hoặc form
+    const totalPrice = parseFloat(document.getElementById("totalAmount").value) || 0;
+    const receivedAmount = parseFloat(document.getElementById("receivedAmount").value) || 0;
+    const orderDate = new Date().toISOString();
+    const status = "Completed";
+
+    const orderData = {
+        customer: '670a7fbb1b5ec4ea3c6654ea',
+        employee,
+        totalPrice,
+        orderDate,
+        receivedAmount,
+        status,
+    };
+
+    try {
+        const res = await fetch('/order/create', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(orderData),
+        });
+
+        const data = await res.json();
+        console.log("Đơn hàng đã được tạo >>>>>>>>>>>>>>>>>>>>>>>>:"+data);
+        if (data.EC === 0) {
+            console.log("Đơn hàng đã được tạo:", data.data);
+            alert("Đơn hàng tạo thành công!");
+        } else {
+            alert("Không thể tạo đơn hàng");
+        }
+    } catch (error) {
+        console.error("Lỗi khi tạo đơn hàng:", error);
+        alert("Đã xảy ra lỗi khi tạo đơn hàng!");
+    }
+});
+
+
+
 
 
 

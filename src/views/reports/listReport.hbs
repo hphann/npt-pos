@@ -6,10 +6,10 @@
                         </div>                        
                         <div class="card-header-toolbar d-flex align-items-center">
                             <div class="dropdown">
-                                <span class="dropdown-toggle dropdown-bg btn" id="dropdownMenuButton005"
+                                {{!-- <span class="dropdown-toggle dropdown-bg btn" id="dropdownMenuButton005"
                                     data-toggle="dropdown">
                                     Tháng này<i class="ri-arrow-down-s-line ml-1"></i>
-                                </span>
+                                </span> --}}
                                 <div class="dropdown-menu dropdown-menu-right shadow-none"
                                     aria-labelledby="dropdownMenuButton005">
                                     <a class="dropdown-item" href="#">Theo năm</a>
@@ -22,33 +22,15 @@
                     <div class="card-body">
                         <div class="d-flex flex-wrap align-items-center mt-2">
                             <div class="d-flex align-items-center progress-order-left">
-                                <div class="progress progress-round m-0 orange conversation-bar" data-percent="46">
-                                    <span class="progress-left">
-                                        <span class="progress-bar"></span>
-                                    </span>
-                                    <span class="progress-right">
-                                        <span class="progress-bar"></span>
-                                    </span>
-                                    <div class="progress-value text-secondary">46%</div>
-                                </div>
                                 <div class="progress-value ml-3 pr-5 border-right">
-                                    <h5>$12,6598</h5>
+                                    <h5 class="revenue-value"></h5>
                                     <p class="mb-0">Doanh thu</p>
                                 </div>
                             </div>
                             {{#if (isAdmin @root.user.permissions)}}
                             <div class="d-flex align-items-center ml-5 progress-order-right">
-                                <div class="progress progress-round m-0 primary conversation-bar" data-percent="46">
-                                    <span class="progress-left">
-                                        <span class="progress-bar"></span>
-                                    </span>
-                                    <span class="progress-right">
-                                        <span class="progress-bar"></span>
-                                    </span>
-                                    <div class="progress-value text-primary">46%</div>
-                                </div>
                                 <div class="progress-value ml-3">
-                                    <h5>$59,8478</h5>
+                                    <h5 class="profit-value"></h5>
                                     <p class="mb-0">Lợi nhuận</p>
                                 </div>
                             </div>
@@ -60,8 +42,9 @@
                     </div> --}}
                 </div>
             </div>
-            <div class="col-lg-12">
-                <div class="card card-block card-stretch card-height">
+            <div class="container-fluid">
+                <div class="col-lg-12">
+                    <div class="card card-block card-stretch card-height">
                     <div class="card-header d-flex align-items-center justify-content-between"> 
                         <div class="input-group col-lg-5">
                             <div class="input-group-prepend">
@@ -91,7 +74,153 @@
                     </div>
                 </div>
             </div>
-            <div class="col-lg-12">
+
+      <div class="col-lg-12">
+         <div class="card">
+            <div class="card-body p-0">
+               <div class="iq-edit-list usr-edit">
+                  <ul class="iq-edit-profile d-flex nav nav-pills">
+                     <li class="col-md-3 p-0">
+                        <a class="nav-link active" data-toggle="pill" href="#personal-information">
+                           Bảng biểu
+                        </a>
+                     </li>
+                     <li class="col-md-3 p-0">
+                        <a class="nav-link" data-toggle="pill" href="#sale-information">
+                           Danh sách giao dịch
+                        </a>
+                     </li>
+                  </ul>
+               </div>
+            </div>
+         </div>
+      </div>
+      <div class="col-lg-12">
+         <div class="iq-edit-list-data">
+            <div class="tab-content">
+               <div class="tab-pane fade active show" id="personal-information" role="tabpanel">
+                  <!-- Bảng biểu -->
+                <div class="card card-block card-stretch card-height">
+                    <div class="card-header d-flex align-items-center justify-content-between">
+                        <div class="header-title">
+                            <h4 class="card-title">Giao dịch & Sản phẩm</h4>
+                        </div>
+                        <div class="card-header-toolbar d-flex align-items-center">
+                            <div class="dropdown">
+                                <span class="dropdown-toggle dropdown-bg btn" id="dropdownMenuButton002"
+                                    data-toggle="dropdown">
+                                    Tháng này<i class="ri-arrow-down-s-line ml-1"></i>
+                                </span>
+                                <div class="dropdown-menu dropdown-menu-right shadow-none"
+                                    aria-labelledby="dropdownMenuButton002">
+                                    <a class="dropdown-item" href="#">Theo năm</a>
+                                    <a class="dropdown-item" href="#">Theo tháng</a>
+                                    <a class="dropdown-item" href="#">Theo tuần</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-body"></div>
+                        <div id="chartdiv" style="min-height: 400px;">
+                        </div>
+                    </div>
+                  <!-- Bảng biểu -->
+               </div>
+               <div class="tab-pane fade" id="sale-information" role="tabpanel">
+                  <div class="card">
+                     <div class="card-header d-flex justify-content-between">
+                        <div class="iq-header-title">
+                           <h4 class="card-title">Danh sách giao dịch</h4>
+                        </div>
+                     </div>
+                     <div class="card-body">
+                        <ul id="transaction-list"></ul>
+                        <div class="table-responsive rounded mb-3">
+                           <table class="data-tables table mb-0 tbl-server-info">
+                              <thead class="bg-white text-uppercase">
+                                 <tr class="ligth ligth-data">
+                                    <th>Ngày</th>
+                                    <th>Khách hàng</th>
+                                    <th>Tổng</th>
+                                    <th>Đã thanh toán</th>
+                                    <th>Trạng thái</th>
+                                    <th>Thừa</th>
+                                    <th>Tùy chọn</th>
+                                 </tr>
+                              </thead>
+                              <tbody class="ligth-body">
+                                {{#each orders}}
+                                <tr>
+                                    <td>
+                                        <div class="checkbox d-inline-block">
+                                            <input type="checkbox" class="checkbox-input" id="checkbox{{@index}}">
+                                            <label for="checkbox{{@index}}" class="mb-0"></label>
+                                        </div>
+                                    </td>
+                                    <td>{{formatDate orderDate}}</td>
+                                    <td>{{customer.name}}</td>
+                                    <td>{{totalPrice}}</td>
+                                    <td>{{payment.receive}}</td>
+                                    <td>
+                                        <div class="badge {{statusBadge status}}">{{status}}</div>
+                                    </td>
+                                    <td>{{employee.fullName}}</td>
+                                    <td>{{payment.remain}}</td>
+                                </tr>
+                                {{/each}}
+                            </tbody>
+                           </table>
+                        </div>
+                     </div>
+                  </div>
+               </div>
+            </div>
+         </div>
+      </div>
+   </div>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    // Gọi API để lấy dữ liệu
+    fetch('/report/revenue-profit')
+      .then(response => response.json())
+      .then(data => {
+        // Xử lý dữ liệu doanh thu và lợi nhuận
+        const revenueData = data.totalRevenue;
+        const profitData = data.totalProfit;
+
+        // Định dạng dữ liệu thành VND
+        const formattedRevenue = new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(revenueData);
+        const formattedProfit = new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(profitData);
+
+        // Cập nhật giao diện với dữ liệu mới
+        document.querySelector('.revenue-value').innerText = formattedRevenue;
+        document.querySelector('.profit-value').innerText = formattedProfit;
+      })
+      .catch(error => console.error('Error fetching report data:', error));
+  });
+</script>
+
+<script>
+        document.addEventListener('DOMContentLoaded', function() {
+            fetch('/order/')
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        const transactionList = document.getElementById('transaction-list');
+                        data.data.forEach(transaction => {
+                            const listItem = document.createElement('li');
+                            listItem.textContent = `Giao dịch ID: ${transaction._id}, Số tiền nhận: ${transaction.receive}, Còn lại: ${transaction.remain}`;
+                            transactionList.appendChild(listItem);
+                        });
+                    } else {
+                        console.error('Error fetching transactions:', data.message);
+                    }
+                })
+                .catch(error => console.error('Error fetching transactions:', error));
+        });
+    </script>
+            {{!-- <div class="col-lg-12">
                 <div class="card card-block card-stretch card-height">
                     <div class="card-header d-flex align-items-center justify-content-between">
                         <div class="header-title">
@@ -121,34 +250,8 @@
                         </div>
                     </div>
                 </div>
-            </div>
-            <div class="col-lg-12">
-                <div class="card card-block card-stretch card-height">
-                    <div class="card-header d-flex align-items-center justify-content-between">
-                        <div class="header-title">
-                            <h4 class="card-title">Giao dịch & Sản phẩm</h4>
-                        </div>
-                        <div class="card-header-toolbar d-flex align-items-center">
-                            <div class="dropdown">
-                                <span class="dropdown-toggle dropdown-bg btn" id="dropdownMenuButton002"
-                                    data-toggle="dropdown">
-                                    Tháng này<i class="ri-arrow-down-s-line ml-1"></i>
-                                </span>
-                                <div class="dropdown-menu dropdown-menu-right shadow-none"
-                                    aria-labelledby="dropdownMenuButton002">
-                                    <a class="dropdown-item" href="#">Theo năm</a>
-                                    <a class="dropdown-item" href="#">Theo tháng</a>
-                                    <a class="dropdown-item" href="#">Theo tuần</a>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="card-body"></div>
-                        <div id="chartdiv" style="min-height: 400px;">
-                        </div>
-                    </div>
-                </div>
-            </div>
+            </div> --}}
+
 
 <style>
 #layout1-chart-0 {
@@ -166,7 +269,7 @@
 <script src="https://cdn.amcharts.com/lib/5/xy.js"></script>
 <script src="https://cdn.amcharts.com/lib/5/themes/Animated.js"></script>
 
-<!-- Chart code -->
+{{!-- <!-- Chart code -->
 <script>
 am4core.ready(function() {
 
@@ -234,10 +337,10 @@ am4core.ready(function() {
   chart.data = data;
 
 }); // end am4core.ready()
-</script>
+</script> --}}
 
-<!-- HTML -->
-<div id="layout1-chart-0"></div>    
+{{!-- <!-- HTML -->
+<div id="layout1-chart-0"></div>     --}}
 
 <script>
 am5.ready(function() {

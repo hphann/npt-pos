@@ -19,9 +19,49 @@ export const home = async(req, res) => {
         { $group: { _id: null, total: { $sum: '$quantity' } } }
     ])
     const totalProductsSold = totalProductsSoldResult[0] ?.total || 0
+    // Lấy 5 sản phẩm bán chạy nhất
+    const topSellingProducts = await OrderDetail.aggregate([
+        { $group: { _id: '$productId', totalSold: { $sum: '$quantity' } } },
+        { $sort: { totalSold: -1 } },
+        { $limit: 5 },
+        {
+            $lookup: {
+                from: 'products', // Tên collection sản phẩm
+                localField: '_id',
+                foreignField: '_id',
+                as: 'productDetails'
+            }
+        },
+        { $unwind: '$productDetails' },
+        {
+            $project: {
+                _id: 0,
+                productId: '$_id',
+                totalSold: 1,
+                productName: '$productDetails.name',
+                productPrice: '$productDetails.price',
+                productImage: '$productDetails.image'
+            }
+        }
+    ])
 
+    // Đảm bảo luôn có 4 thẻ được tạo
+    const defaultProducts = Array(4).fill({
+        productId: null,
+        totalSold: 0,
+        productName: 'N/A',
+        productPrice: 0
+    })
 
-    res.render('index', { user: req.session.user, totalOrders, totalRevenue: totalRevenueResult, totalProductsSold })
+    const displayedProducts = topSellingProducts.concat(defaultProducts).slice(0, 4)
+    console.log(displayedProducts)
+    res.render('index', { 
+        user: req.session.user, 
+        totalOrders, 
+        totalRevenue: totalRevenueResult, 
+        totalProductsSold,
+        topSellingProducts: displayedProducts // Sử dụng displayedProducts để render
+    })
 }
 
 // Đăng xuất chuyển đến trang login

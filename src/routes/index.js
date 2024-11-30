@@ -17,7 +17,6 @@ const router = (app) => {
     app.use('/employee', employeeRouter)
     app.use('/customer', customerRouter)
     app.use('/report', reportRouter)
-
     app.use('/transaction', transactionRouter)
     app.use('/payment', paymentRouter)
     app.use('/api', searchRoutes)

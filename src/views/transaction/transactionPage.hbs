@@ -78,155 +78,228 @@
             background-color: #d4edda;
             color: #155724;
         }
+        .print-container {
+            display: none;
+        }
+        .remove-product-button{
+            margin-bottom: 10px;
+        }
     </style>
 </head>
 <body>
-
 <div class="container">
     <h3>Thông tin giao dịch</h3>
     <form id="transactionForm">
-        <!-- Tên khách hàng -->
         <div class="form-group">
             <label for="customerName">Tên khách hàng:</label>
             <input type="text" class="form-control" id="customerName" name="customerName" required>
         </div>
 
-        <!-- Điện thoại khách hàng -->
         <div class="form-group">
             <label for="customerPhone">Điện thoại:</label>
             <input type="text" class="form-control" id="customerPhone" name="customerPhone" required>
         </div>
 
+        <h4>Danh sách sản phẩm</h4>
+        <div id="productList">
+            <div class="product-item">
+                <div class="form-group">
+                    <label for="productName">Tên sản phẩm:</label>
+                    <input type="text" class="form-control" name="productName[]" required>
+                </div>
 
-        <!-- Thông tin sản phẩm -->
-        <div class="form-group">
-            <label for="productName">Tên sản phẩm:</label>
-            <input type="text" class="form-control" id="productName" name="productName" required>
+                <div class="form-group">
+                    <label for="productQuantity">Số lượng:</label>
+                    <input type="number" class="form-control" name="productQuantity[]" min="1" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="productPrice">Giá mỗi sản phẩm (VND):</label>
+                    <input type="number" class="form-control" name="productPrice[]" required>
+                </div>
+            </div>
         </div>
 
-        <!-- Số lượng sản phẩm -->
-        <div class="form-group">
-            <label for="productQuantity">Số lượng:</label>
-            <input type="number" class="form-control" id="productQuantity" name="productQuantity" min="1" required>
-        </div>
+        <button type="button" class="btn btn-secondary" id="addProductButton">Thêm sản phẩm</button>
 
-        <!-- Giá sản phẩm -->
-        <div class="form-group">
-            <label for="productPrice">Giá mỗi sản phẩm (VND):</label>
-            <input type="number" class="form-control" id="productPrice" name="productPrice" required>
-        </div>
-
-        <!-- Tổng số tiền -->
         <div class="form-group">
             <label for="totalAmount">Tổng số tiền:</label>
             <input type="number" class="form-control" id="totalAmount" name="totalAmount" required readonly>
+        </div>
 
-
-        <!-- Số tiền thanh toán -->
         <div class="form-group">
             <label for="receivedAmount">Số tiền thanh toán:</label>
             <input type="number" class="form-control" id="receivedAmount" name="receivedAmount" required>
         </div>
 
-        <!-- Phương thức thanh toán -->
         <div class="form-group">
             <label for="paymentMethod">Phương thức thanh toán:</label>
             <select class="form-control" id="paymentMethod" name="paymentMethod" required>
-
-
                 <option value="momo">Momo</option>
                 <option value="cash">Tiền mặt</option>
             </select>
         </div>
 
-        
-        <!-- Nút xác nhận -->
         <button type="submit" class="btn" id="paymentButton">Xác nhận thanh toán</button>
 
-        <!-- Thông báo sẽ xuất hiện sau khi nhấn nút -->
         <div id="paymentMessage" style="display:none; color: green;">
             Đã thanh toán
         </div>
-
-
     </form>
 
-    <!-- Hiển thị kết quả thanh toán -->
     <div id="paymentSummary"></div>
-    <div id="qrCode" class="qr-code"></div>
+    <button type="button" class="btn" id="printButton" style="display:none;">In hóa đơn</button>
 </div>
 
+<div class="print-container" id="printArea">
+    <h2>Thông tin giao dịch</h2>
+    <div id="printSummary"></div>
+</div>
+
+
 <script>
+    // Hàm tính tổng tiền
+    function calculateTotal() {
+        let totalAmount = 0;
 
-document.getElementById('transactionForm').addEventListener('submit', async function(e) {
-    e.preventDefault(); // Ngăn việc tải lại trang
+        const productQuantities = document.getElementsByName('productQuantity[]');
+        const productPrices = document.getElementsByName('productPrice[]');
 
-    // Lấy thông tin từ các trường trong form
-    const customerName = document.getElementById('customerName').value;
-    const customerPhone = document.getElementById('customerPhone').value;
-    const productName = document.getElementById('productName').value;
-    const productQuantity = parseInt(document.getElementById('productQuantity').value);
-    const productPrice = parseFloat(document.getElementById('productPrice').value);
-    const receivedAmount = parseFloat(document.getElementById('receivedAmount').value);
-    const paymentMethod = document.getElementById('paymentMethod').value;
+        for (let i = 0; i < productQuantities.length; i++) {
+            const quantity = parseInt(productQuantities[i].value) || 0;
+            const price = parseFloat(productPrices[i].value) || 0;
 
-    // Kiểm tra dữ liệu nhập
-    if (isNaN(productPrice) || isNaN(productQuantity) || isNaN(receivedAmount)) {
-        alert("Vui lòng nhập đầy đủ thông tin và giá trị hợp lệ.");
-        return;
+            totalAmount += quantity * price;
+        }
+
+        document.getElementById('totalAmount').value = totalAmount
+        calculateBalance(); // Cập nhật lại số tiền thối mỗi khi tổng tiền thay đổi
     }
 
-    // Tính tổng tiền (Giá sản phẩm * số lượng)
-    const totalAmount = productPrice * productQuantity;
+    // Hàm tính số tiền còn lại (số tiền thanh toán - tổng tiền)
+    function calculateBalance() {
+        const totalAmount = parseFloat(document.getElementById('totalAmount').value.replace(/,/g, '')) || 0;
+        const receivedAmount = parseFloat(document.getElementById('receivedAmount').value.replace(/,/g, '')) || 0;
 
-    // Cập nhật tổng tiền lên giao diện
-    document.getElementById('totalAmount').value = totalAmount.toLocaleString(); // Cập nhật giá trị của trường input
+        const balance = receivedAmount - totalAmount;
 
-    // Kiểm tra số tiền thanh toán
-    if (receivedAmount < totalAmount) {
-        alert("Số tiền thanh toán không đủ. Vui lòng nhập lại.");
-        return;
+
+        document.getElementById('amountRemaining').value = balance.toLocaleString('vi-VN');
     }
 
-    // Tính tiền thối
-    const changeAmount = receivedAmount - totalAmount;
+    // Lắng nghe sự kiện thay đổi của số lượng và giá sản phẩm
+    document.getElementById('productList').addEventListener('input', function() {
+        calculateTotal();
+    });
 
-    // Xử lý thanh toán
-    let summaryHtml = `
-        <h4>Thông tin thanh toán</h4>
-        <p><strong>Tên khách hàng:</strong> ${customerName}</p>
-        <p><strong>Điện thoại:</strong> ${customerPhone}</p>
-        <p><strong>Tên sản phẩm:</strong> ${productName}</p>
-        <p><strong>Số lượng:</strong> ${productQuantity}</p>
-        <p><strong>Giá mỗi sản phẩm:</strong> ${productPrice.toLocaleString()} VND</p>
-        <p><strong>Tổng tiền:</strong> ${totalAmount.toLocaleString()} VND</p>
-        <p><strong>Tiền nhận:</strong> ${receivedAmount.toLocaleString()} VND</p>
-    `;
+    // Lắng nghe sự kiện thay đổi của số tiền thanh toán
+    document.getElementById('receivedAmount').addEventListener('input', function() {
+        calculateBalance();
+    });
 
-    // Hiển thị thông tin thanh toán theo phương thức thanh toán
-    if (paymentMethod === 'cash') {
-        summaryHtml += `
-            <p><strong>Tiền thối:</strong> ${changeAmount.toLocaleString()} VND</p>
-            <p><strong>Phương thức thanh toán:</strong> Tiền mặt</p>
+    // Thêm sự kiện cho nút "Thêm sản phẩm"
+    document.getElementById('addProductButton').addEventListener('click', function() {
+        const productList = document.getElementById('productList');
+        const newProductItem = document.createElement('div');
+        newProductItem.classList.add('product-item');
+
+        newProductItem.innerHTML = `
+            <div class="form-group">
+                <label for="productName">Tên sản phẩm:</label>
+                <input type="text" class="form-control" name="productName[]" required>
+            </div>
+
+            <div class="form-group">
+                <label for="productQuantity">Số lượng:</label>
+                <input type="number" class="form-control" name="productQuantity[]" min="1" required>
+            </div>
+
+            <div class="form-group">
+                <label for="productPrice">Giá mỗi sản phẩm (VND):</label>
+                <input type="number" class="form-control" name="productPrice[]" required>
+            </div>
+            <button type="button" class="btn btn-danger remove-product-button">Xóa</button>
         `;
-        document.getElementById('paymentSummary').innerHTML = summaryHtml;
-        document.getElementById('qrCode').innerHTML = ''; // Xóa QR code nếu có
-    }
 
-    
-     if (paymentMethod === 'momo') {
-        summaryHtml += `
-            <p><strong>Phương thức thanh toán:</strong> Momo</p>
-        `;
+        productList.appendChild(newProductItem);
 
-        // Hiển thị QR code thanh toán Momo (giả lập)
-        const qrCodeImage = `<img src="https://example.com/qr-code.png" alt="QR code">`;
-        document.getElementById('qrCode').innerHTML = qrCodeImage;
-    }
+        // Xử lý sự kiện xóa sản phẩm
+        newProductItem.querySelector('.remove-product-button').addEventListener('click', function() {
+            newProductItem.remove();
+            calculateTotal();
+        });
 
-    document.getElementById('paymentMessage').style.display = 'block'; // Hiển thị thông báo thanh toán
-});
+        newProductItem.querySelector('[name="productQuantity[]"]').addEventListener('input', calculateTotal);
+        newProductItem.querySelector('[name="productPrice[]"]').addEventListener('input', calculateTotal);
 
+        calculateTotal();
+    });
+
+    // Sự kiện xác nhận thanh toán
+    document.getElementById("paymentButton").addEventListener("click", async (event) => {
+        event.preventDefault();
+
+        const customerName = document.getElementById("customerName").value;
+        const customerPhone = document.getElementById("customerPhone").value;
+        const totalPrice = parseFloat(document.getElementById("totalAmount").value.replace(/,/g, '')) || 0;
+        const receivedAmount = parseFloat(document.getElementById("receivedAmount").value.replace(/,/g, '')) || 0;
+        const paymentMethod = document.getElementById("paymentMethod").value;
+        const remain = receivedAmount - totalPrice;
+
+        if (remain < 0) {
+            alert("Số tiền thanh toán không đủ!");
+            return;
+        }
+
+        const orderData = {
+            orderId: '674b2f997e3ac0e850bfd73e',
+            paymentDate: new Date().toISOString(),
+            receive: receivedAmount,
+            remain: remain,
+        };
+
+        try {
+            const res = await fetch('/payment/create', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(orderData),
+            });
+
+            const data = await res.json();
+            if (data.success) {
+                alert("Thanh toán thành công!");
+                document.getElementById('paymentSummary').innerHTML = `
+                    <h4>Thông tin thanh toán:</h4>
+                    <p>Tên khách hàng: ${customerName}</p>
+                    <p>Điện thoại: ${customerPhone}</p>
+                    <p>Tổng tiền: ${totalPrice.toLocaleString()} VND</p>
+                    <p>Số tiền thanh toán: ${receivedAmount.toLocaleString()} VND</p>
+                    <p>Phương thức thanh toán: ${paymentMethod}</p>
+                    <p>Số tiền còn lại: ${remain.toLocaleString()} VND</p>
+                `;
+                document.getElementById('paymentMessage').style.display = 'block';
+                document.getElementById('printButton').style.display = 'block';
+            } else {
+                alert("Đã xảy ra lỗi, vui lòng thử lại!");
+            }
+        } catch (error) {
+            console.error("Lỗi kết nối:", error);
+            alert("Không thể kết nối đến máy chủ, vui lòng thử lại sau!");
+        }
+    });
+
+    // Sự kiện in hóa đơn
+    document.getElementById('printButton').addEventListener('click', function() {
+        const printSummary = document.getElementById('paymentSummary').innerHTML;
+        const printWindow = window.open('', '', 'height=600,width=800');
+        printWindow.document.write('<html><head><title>In hóa đơn</title></head><body>');
+        printWindow.document.write(printSummary);
+        printWindow.document.write('</body></html>');
+        printWindow.document.close();
+        printWindow.print();
+    });
 </script>
 
 </body>
